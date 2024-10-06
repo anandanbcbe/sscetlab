@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Exercise</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        #lab-output-form {
+            display: none; /* Hide the form initially */
+            margin-top: 20px;
+        }
+        textarea {
+            width: 300px;
+            height: 100px;
+            resize: none; /* Prevent resizing */
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function speakText(text) {
+            var msg = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(msg);
+        }
+
+        let countdownTime = 120; // 2 minutes in seconds
+
+        function startTimer() {
+            const timerElement = document.getElementById("timer");
+            const formElement = document.getElementById("lab-output-form");
+
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(countdownTime / 60);
+                let seconds = countdownTime % 60;
+
+                timerElement.innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+                if (countdownTime <= 0) {
+                    clearInterval(countdown); // Stop the timer
+                    formElement.style.display = "block"; // Show the form after the time expires
+                    timerElement.innerHTML = "Time's up!";
+                    speakText("Time's up! Please enter your lab output.");
+                }
+
+                countdownTime--;
+            }, 1000); // Update every second
+        }
+
+        window.onload = function() {
+            speakText("Your lab exercise is {{ student['LabExercise'] }}. You have 2 minutes to complete.");
+            startTimer();
+        }
+    </script>
+</head>
+<body>
+    <div id="logo">
+        <img src="/static/ss-logo1.jpg" alt="Logo" width="100" height="100">
+    </div>
+
+    <div>
+        <h1>Lab Exercise for {{ student["RegNum"] }}</h1>
+        <p>Your lab exercise: {{ student["LabExercise"] }}</p>
+        <p>Starting lab... You have 2 minutes to prepare.</p>
+
+        <div class="timer">
+            Time left: <span id="timer">2:00</span>
+        </div>
+
+        <div id="lab-output-form">
+            <form method="POST">
+                <label for="output">Enter your lab output:</label><br>
+                <textarea id="output" name="output" required></textarea><br>
+                <button type="submit">Submit Output</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

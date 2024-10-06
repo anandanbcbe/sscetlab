@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Registration</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+    <script>
+        function speakText(text) {
+            var msg = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(msg);
+        }
+
+        window.onload = function() {
+            var departmentMessage = "Today's department is {{ department }}.";
+            speakText(departmentMessage);
+        };
+    </script>
+</head>
+<body>
+    <div id="logo">
+        <img src="/static/ss-logo1.jpg" alt="Logo" width="100" height="100">
+    </div>
+
+    <div>
+        <h1>Today's department: {{ department }}</h1>
+
+        {% if error %}
+            <p class="error" id="error-message">{{ error }}</p>
+            <script>
+                speakText("{{ error }}");
+            </script>
+        {% endif %}
+
+        <form method="POST">
+            <label for="reg_num">Enter your registration number:</label><br>
+            <input type="text" id="reg_num" name="reg_num" required><br><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
